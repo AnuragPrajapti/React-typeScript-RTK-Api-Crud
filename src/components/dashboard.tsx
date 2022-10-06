@@ -1,4 +1,4 @@
-import React, { useState  , useEffect} from "react";
+import React, { useState} from "react";
 import {
   useGetAddUserMutation,
   useGetAllUserDataQuery,
@@ -7,68 +7,69 @@ import {
   useGetUpdateUserMutation,
 } from "../services/createSlice";
 import Table from "react-bootstrap/Table";
-import { IUserData , IAddUser } from "./interFace";
+import { IUserData, IAddUser } from "./interFace";
 import "./style.css";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { makeStyles, Container, Typography, TextField } from "@material-ui/core";
-import {useForm} from 'react-hook-form';
-import { NavLink } from 'react-router-dom';
-
+import {
+  makeStyles,
+  Container,
+  Typography,
+  TextField,
+} from "@material-ui/core";
+import { useForm } from "react-hook-form";
+import { NavLink } from "react-router-dom";
+import { Spinner } from "react-bootstrap";
 
 const useStyles = makeStyles((theme) => ({
   heading: {
     textAlign: "center",
     margin: theme.spacing(1, 0, 4),
   },
-  submitButton: {
-    marginTop: theme.spacing(4),
-  },
 }));
 
-
 const Dashboard = () => {
-  const { data, isLoading, error } = useGetAllUserDataQuery();
-  const [deleteUser, deleteUserInfo] = useGetDeleteUserMutation();
-  const [addUser, addUserInfo] = useGetAddUserMutation();
-  const [ editUser , editUserInfo ] = useGetEitUserMutation();
-  const [ updateUser , updateUserInfo ] = useGetUpdateUserMutation();
+  const { data, isLoading } = useGetAllUserDataQuery();
+  const [deleteUser] = useGetDeleteUserMutation();
+  const [addUser] = useGetAddUserMutation();
+  const [editUser, editUserInfo] = useGetEitUserMutation();
+  const [updateUser] = useGetUpdateUserMutation();
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
-  const { heading, submitButton } = useStyles();
+  const { heading } = useStyles();
   const handleShow = () => setShow(true);
+  const [ detLoader, setdetLoader] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    // formState: { errors },
+  } = useForm<IAddUser>();
 
-  const { register  , handleSubmit , reset , setValue ,  formState : {errors} } = useForm<IAddUser>()
-
-  const handleAddData = (data : IAddUser)=> {
-       if(editUserInfo?.data?._id){
-          console.log("update",data);
-          updateUser(data)
-          alert("Data Updated Successfully!")
-       }else{
-         addUser(data)
-       }
-       reset()
-  }
- 
-  const handleDelete = (item: IUserData) => {
-    deleteUser(item);
+  const handleAddData = (data: IAddUser) => {
+    if (editUserInfo?.data?._id) {
+      console.log("update", data);
+      updateUser(data);
+      alert("Data Updated Successfully!");
+    } else {
+      addUser(data);
+    }
+    reset();
   };
 
-  const handleEditUser = (userId : IAddUser ) =>{
-    setValue("name",userId?.name);
-    setValue("age",userId?.age);
-    setValue("city",userId?.city);
-    setValue("_id",userId?._id);
-    editUser(userId);
-  }
+  const handleDelete = (item: IUserData) => {
+    deleteUser(item);
+    setdetLoader(true)
+  };
 
-  // useEffect(() => {
-  //    const isEdit  = editUserInfo?.data;
-  //     console.log("isEditData",isEdit);
-  //     console.log("name",isEdit?.name);
-  //   },[editUserInfo])
-  
+  const handleEditUser = (userId: IAddUser) => {
+    editUser(userId);
+    setValue("name", userId?.name);
+    setValue("age", userId?.age);
+    setValue("city", userId?.city);
+    setValue("_id", userId?._id);
+  };
 
   return (
     <div className="container">
@@ -79,13 +80,15 @@ const Dashboard = () => {
         <Modal show={show} onHide={handleClose}>
           <Modal.Body>
             <Container maxWidth="xs">
-              <Typography className={heading} variant="h3">
-                Sign Up Form
-              </Typography>
+              {
+                 editUserInfo?.data ? <Typography className={heading} variant="h3" >Update User Form</Typography>
+                 :  <Typography className={heading} variant="h3">Sign Up Form</Typography>
+              }
+            
               <form onSubmit={handleSubmit(handleAddData)}>
                 <TextField
                   variant="outlined"
-                  type='text'
+                  type="text"
                   margin="normal"
                   label="Full Name"
                   fullWidth
@@ -109,10 +112,25 @@ const Dashboard = () => {
                   required
                   {...register("city")}
                 />
-                {
-                   editUserInfo?.data?._id ? <button type="submit" className="addUserBtn btn btn-primary" style={{marginTop : '10px'}} >Update User</button> 
-                   :  <button type="submit" className="addUserBtn btn btn-primary" style={{marginTop : '10px'}} >Add User</button>
-                }
+                {isLoading ? (
+                  <Spinner animation="border"  />
+                ) : editUserInfo?.data?._id ? (
+                  <button
+                    type="submit"
+                    className="addUserBtn btn btn-primary"
+                    style={{ marginTop: "10px" }}
+                  >
+                    Update User
+                  </button>
+                ) : (
+                  <button
+                    type="submit"
+                    className="addUserBtn btn btn-primary"
+                    style={{ marginTop: "10px" }}
+                  >
+                    Add User
+                  </button>
+                )}
               </form>
             </Container>
           </Modal.Body>
@@ -142,23 +160,31 @@ const Dashboard = () => {
               <td>{item.age}</td>
               <td>{item.city}</td>
               <td>
+                 {
+                    detLoader ? <Spinner animation="grow" variant="danger" /> :
                 <button
-                  className="deleteBtn btn btn-danger"
-                  onClick={() => handleDelete(item)}
+                className="deleteBtn btn btn-danger"
+                onClick={() => handleDelete(item)}
                 >
                   Delete
                 </button>
+                }
               </td>
               <td onClick={handleShow}>
-                <button className="editBtn btn btn-success" onClick={()=>handleEditUser(item)}  >
-                   EditUser
+                <button
+                  className="editBtn btn btn-success"
+                  onClick={() => handleEditUser(item)}
+                >
+                  EditUser
                 </button>
               </td>
             </tr>
           ))}
         </tbody>
       </Table>
-      <p>Don't Have A Account ..? <NavLink to='/signup' >SignUp</NavLink> </p>
+      <p>
+        Don't Have A Account ..? <NavLink to="/signup">SignUp</NavLink>{" "}
+      </p>
     </div>
   );
 };
