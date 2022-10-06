@@ -7,7 +7,7 @@ import {
   IAddUser,
 } from "../components/interFace";
 
-const Token: string | null = JSON.parse(localStorage.getItem("getToken")!);
+const Token : string | null = JSON.parse(localStorage.getItem("getToken")!);
 
 export const callApiMethods = createApi({
   reducerPath: "callApiData",
@@ -87,9 +87,7 @@ export const callApiMethods = createApi({
     }),
     getUpdateUser: build.mutation<IAddUser, Partial<IAddUser>>({
       query: (updateUser) => {
-        console.log("updateApi", updateUser);
         const id = updateUser?._id;
-        console.log(id);
         return {
           url: `update/${id}`,
           method: "PUT",
