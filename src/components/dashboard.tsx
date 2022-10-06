@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import {
   useGetAddUserMutation,
   useGetAllUserDataQuery,
@@ -26,29 +26,25 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     margin: theme.spacing(1, 0, 4),
   },
-  submitButton: {
-    marginTop: theme.spacing(4),
-  },
 }));
 
 const Dashboard = () => {
-  const { data, isLoading, error } = useGetAllUserDataQuery();
-  const [deleteUser, deleteUserInfo] = useGetDeleteUserMutation();
-  const [addUser, addUserInfo] = useGetAddUserMutation();
+  const { data, isLoading } = useGetAllUserDataQuery();
+  const [deleteUser] = useGetDeleteUserMutation();
+  const [addUser] = useGetAddUserMutation();
   const [editUser, editUserInfo] = useGetEitUserMutation();
-  const [updateUser, updateUserInfo] = useGetUpdateUserMutation();
+  const [updateUser] = useGetUpdateUserMutation();
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
-  const { heading, submitButton } = useStyles();
+  const { heading } = useStyles();
   const handleShow = () => setShow(true);
-  const [loader, setLoader] = useState(false);
   const [ detLoader, setdetLoader] = useState(false);
   const {
     register,
     handleSubmit,
     reset,
     setValue,
-    formState: { errors },
+    // formState: { errors },
   } = useForm<IAddUser>();
 
   const handleAddData = (data: IAddUser) => {
@@ -56,10 +52,8 @@ const Dashboard = () => {
       console.log("update", data);
       updateUser(data);
       alert("Data Updated Successfully!");
-      setLoader(true);
     } else {
       addUser(data);
-      setLoader(true);
     }
     reset();
   };
@@ -76,19 +70,6 @@ const Dashboard = () => {
     setValue("city", userId?.city);
     setValue("_id", userId?._id);
   };
-
-  // useEffect(() => {
-  //    const isEdit  = editUserInfo?.data;
-  //     console.log("isEditData",isEdit);
-  //     console.log("name",isEdit?.name);
-  //   },[editUserInfo])
-  
-
-  setTimeout(() => {
-    setLoader(false);
-    setdetLoader(false)
-  }, 3000);
-
 
   return (
     <div className="container">
@@ -131,7 +112,7 @@ const Dashboard = () => {
                   required
                   {...register("city")}
                 />
-                {loader ? (
+                {isLoading ? (
                   <Spinner animation="border"  />
                 ) : editUserInfo?.data?._id ? (
                   <button
