@@ -1,27 +1,34 @@
-.signInForm{
-    width: 500px;
-    padding: 25px;
-    align-items: center;
-    text-align: center;
+.backgroundImage {
+  height: 110vh;
+  width: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
-.inputField{
+.signInForm {
+  width: 500px;
+  padding: 25px;
+  align-items: center;
+  text-align: center;
+}
+
+.inputField {
   width: 400px;
 }
 
-.deleteBtn{
+.deleteBtn {
   width: 100px;
   box-shadow: 0 0 1px 1px;
   border-radius: 0px !important;
 }
 
-.editBtn{
+.editBtn {
   width: 100px;
   box-shadow: 0 0 1px 1px;
   border-radius: 0px !important;
 }
 
-.addUserBtn{
+.addUserBtn {
   width: 200px;
   box-shadow: 0 0 1px 1px;
   border-radius: 0px !important;
