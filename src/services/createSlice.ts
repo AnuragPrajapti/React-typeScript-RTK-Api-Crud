@@ -7,7 +7,7 @@ import {
   IAddUser,
 } from "../components/interFace";
 
-const Token : string | null = JSON.parse(localStorage.getItem("getToken")!);
+const Token: string | null = JSON.parse(localStorage.getItem("getToken")!);
 
 export const callApiMethods = createApi({
   reducerPath: "callApiData",
@@ -26,6 +26,7 @@ export const callApiMethods = createApi({
         },
       }),
     }),
+
     getSignInUser: build.mutation<ISignIn, Partial<ISignIn>>({
       query: (signInUser) => ({
         url: "login",
@@ -72,6 +73,7 @@ export const callApiMethods = createApi({
         };
       },
     }),
+
     getEitUser: build.mutation<IAddUser, Partial<IAddUser>>({
       query: (editDAta) => {
         const id = editDAta?._id;
@@ -85,6 +87,7 @@ export const callApiMethods = createApi({
         };
       },
     }),
+
     getUpdateUser: build.mutation<IAddUser, Partial<IAddUser>>({
       query: (updateUser) => {
         const id = updateUser?._id;
