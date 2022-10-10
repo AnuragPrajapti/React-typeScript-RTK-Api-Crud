@@ -79,11 +79,11 @@ const Dashboard = () => {
     setValue("_id", userId?._id);
   };
 
-  // useEffect(() => {
-  //    const isEdit  = editUserInfo?.data;
-  //     console.log("isEditData",isEdit);
-  //     console.log("name",isEdit?.name);
-  //   },[editUserInfo])
+  useEffect(() => {
+    if(deleteUserInfo?.status === "fulfilled"){
+        
+    }
+    },[deleteUserInfo])
   
 
   setTimeout(() => {

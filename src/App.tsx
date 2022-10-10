@@ -4,10 +4,12 @@ import { BrowserRouter , Routes , Route } from 'react-router-dom';
 import SignIn from './components/signIn';
 import Dashboard from './components/dashboard';
 import 'bootstrap/dist/css/bootstrap.min.css';
+// import Index from './components/convert';
 
 function App() {
   return (
     <div className="App">
+      {/* <Index /> */}
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<SignIn />} />
